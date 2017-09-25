@@ -1,0 +1,17 @@
+﻿@model IdentitySample.Models.ConfirmMailViewModel
+@{
+    ViewBag.Title = "Confirmación por Email Exitosa";
+}
+
+<h2>@ViewBag.Title.</h2>
+<div>
+    <p>
+        Gracias por confirmar tu email, favor @Html.ActionLink("Click aqui para logearte!!!", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+    </p>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
