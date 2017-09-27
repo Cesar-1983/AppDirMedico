@@ -20,6 +20,8 @@ namespace IdentitySample.Models
             // Add custom user claims here
             return userIdentity;
         }
+        
+        public virtual PerfilMedico PerfilMedico { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -62,14 +64,20 @@ namespace IdentitySample.Models
     public class Especialidad {
         public int EspecialidadID { get; set; }
         public string Descripcion { get; set; }
-
+        public int TipoEspecialidadID { get; set; }
+        [ForeignKey("TipoEspecialidadID")]
         public virtual TipoEspecialidad TipoEspecialidad { get; set; }
 
         public virtual ICollection<PerfilMedico> PerfilMedico { get; set; }
     }
 
     public class PerfilMedico {
-        public int PerfilMedicoID { get; set; }
+        //public int PerfilMedicoID { get; set; }
+        
+        public string Id { get; set; }
+        [Key, ForeignKey("Id")]
+        [Required]
+        public virtual ApplicationUser User { get; set; }
 
         [StringLength(100)]
         public string PrimerNombre { get; set; }
@@ -91,18 +99,24 @@ namespace IdentitySample.Models
         public byte[] Photo { get; set; }
         public virtual ICollection<Especialidad> Especialidad { get; set; }
 
+        //public string UserId { get; set; }
+        //[ForeignKey("UserId")]
+        //public virtual ApplicationUser User { get; set; }
 
-        [ForeignKey("UserId")]
-        public virtual ApplicationUser User { get; set; }
+        //[ForeignKey("Id")]
+        public virtual ICollection<Contactos> Contactos { get; set; }
     }
 
     public class Contactos {
+        [Key]
         public int ContactosID { get; set; }
         [StringLength(15)]
         public string Telefono { get; set; }
         [StringLength(50)]
         public string Descripcion { get; set; }
 
+        public string Id { get; set; }
+        [ForeignKey("Id")]
         public virtual PerfilMedico PerfilMedico { get; set; }
     }
 }
