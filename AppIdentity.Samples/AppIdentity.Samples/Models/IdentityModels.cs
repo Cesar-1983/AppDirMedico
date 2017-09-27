@@ -4,6 +4,9 @@ using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace IdentitySample.Models
 {
@@ -37,6 +40,17 @@ namespace IdentitySample.Models
         {
             return new ApplicationDbContext();
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+        }
+
+        public DbSet<TipoEspecialidad> TipoEspecialidad { get; set; }
+        public DbSet<Especialidad> Especialidad { get; set; }
+        public DbSet<PerfilMedico> PerfilMedico { get; set; }
+        public DbSet<Contactos> Contactos { get; set; }
     }
 
     public class TipoEspecialidad {
@@ -51,7 +65,7 @@ namespace IdentitySample.Models
 
         public virtual TipoEspecialidad TipoEspecialidad { get; set; }
 
-        public virtual PerfilMedico PerfilMedico { get; set; }
+        public virtual ICollection<PerfilMedico> PerfilMedico { get; set; }
     }
 
     public class PerfilMedico {
@@ -69,10 +83,26 @@ namespace IdentitySample.Models
         [StringLength(100)]
         public string SegundoApellido { get; set; }
 
-        [StringLength(300)]
-        public string Descripcion { get; set; }
+        [StringLength(200)]
+        public string DescripcionCorta { get; set; }
+        [StringLength(500)]
+        public string DescripcionLarga { get; set; }
 
         public byte[] Photo { get; set; }
-        public virtual Especialidad Especialidad { get; set; }
+        public virtual ICollection<Especialidad> Especialidad { get; set; }
+
+
+        [ForeignKey("UserId")]
+        public virtual ApplicationUser User { get; set; }
+    }
+
+    public class Contactos {
+        public int ContactosID { get; set; }
+        [StringLength(15)]
+        public string Telefono { get; set; }
+        [StringLength(50)]
+        public string Descripcion { get; set; }
+
+        public virtual PerfilMedico PerfilMedico { get; set; }
     }
 }
