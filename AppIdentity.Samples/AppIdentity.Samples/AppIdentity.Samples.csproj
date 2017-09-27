@@ -201,6 +201,8 @@
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Areas\AdministracionPerfil\Views\web.config" />
+    <Content Include="Areas\AdministracionPerfil\Views\PerfilMedico\Index.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -276,6 +278,9 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\AdministracionPerfil\AdministracionPerfilAreaRegistration.cs" />
+    <Compile Include="Areas\AdministracionPerfil\Controllers\PerfilMedicoController.cs" />
+    <Compile Include="Areas\AdministracionPerfil\Models\PerfilViewModels.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -284,12 +289,32 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201709271338107_Inicial.cs" />
+    <Compile Include="Migrations\201709271338107_Inicial.Designer.cs">
+      <DependentUpon>201709271338107_Inicial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709271714212_Modificaciones.cs" />
+    <Compile Include="Migrations\201709271714212_Modificaciones.Designer.cs">
+      <DependentUpon>201709271714212_Modificaciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201709271338107_Inicial.resx">
+      <DependentUpon>201709271338107_Inicial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709271714212_Modificaciones.resx">
+      <DependentUpon>201709271714212_Modificaciones.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\AdministracionPerfil\Views\Shared\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

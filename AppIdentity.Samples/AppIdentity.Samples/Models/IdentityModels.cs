@@ -59,6 +59,7 @@ namespace IdentitySample.Models
         public int TipoEspecialidadID { get; set; }
         public string Descripcion { get; set; }
 
+        public ICollection<Especialidad> Especialidad { get; set; }
     }
 
     public class Especialidad {
@@ -105,6 +106,7 @@ namespace IdentitySample.Models
 
         //[ForeignKey("Id")]
         public virtual ICollection<Contactos> Contactos { get; set; }
+        public virtual ICollection<DireccionAtencion> DireccionAtencion { get; set; }
     }
 
     public class Contactos {
@@ -114,6 +116,16 @@ namespace IdentitySample.Models
         public string Telefono { get; set; }
         [StringLength(50)]
         public string Descripcion { get; set; }
+
+        public string Id { get; set; }
+        [ForeignKey("Id")]
+        public virtual PerfilMedico PerfilMedico { get; set; }
+    }
+
+    public class DireccionAtencion {
+        [Key]
+        public int DireccionAtencionID { get; set; }
+        public string Direccion { get; set; }
 
         public string Id { get; set; }
         [ForeignKey("Id")]
