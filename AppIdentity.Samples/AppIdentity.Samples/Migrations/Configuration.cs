@@ -6,7 +6,10 @@ namespace AppIdentity.Samples.Migrations
     using System.Linq;
     using IdentitySample.Models;
     using System.Collections.Generic;
-
+    using System.Web;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Identity.Owin;
+    using Microsoft.AspNet.Identity;
 
     internal sealed class Configuration : DbMigrationsConfiguration<IdentitySample.Models.ApplicationDbContext>
     {
@@ -29,6 +32,22 @@ namespace AppIdentity.Samples.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            //InitializeIdentityForEF(context);
+            if (!context.Roles.Any(r => r.Name == "Admin"))
+            {
+                var store = new RoleStore<IdentityRole>(context);
+                var manager = new RoleManager<IdentityRole>(store);
+                var role = new IdentityRole { Name = "Admin" };
+                manager.Create(role);
+            }
+            if (!context.Users.Any(u => u.UserName == "crivera@midominio.com"))
+            {
+                var store = new UserStore<ApplicationUser>(context);
+                var manager = new UserManager<ApplicationUser>(store);
+                var user = new ApplicationUser { UserName = "crivera@midominio.com", Email = "crivera@midominio.com" };
+                manager.Create(user, "123456!");
+                manager.AddToRole(user.Id, "Admin");
+            }
             var Especialidades1 = new List<Especialidad> {
                 new Especialidad { Descripcion="Alergología"},
                 new Especialidad { Descripcion="Anestesiología y reanimación"},
@@ -105,9 +124,52 @@ namespace AppIdentity.Samples.Migrations
 
             };
 
+            //var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            //var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
+            //const string name = "admin@example.com";
+            //const string password = "Admin@123456";
+            //const string roleName = "Admin";
+            //var user = userManager.FindByName(name);
+            //if (user == null)
+            //{
+            //    user = new ApplicationUser { UserName = name, Email = name };
+            //    var result = userManager.Create(user, password);
+            //    result = userManager.SetLockoutEnabled(user.Id, false);
+            //}
+
             TipoEspecialidades.ForEach(e => context.TipoEspecialidad.AddOrUpdate(p => p.Descripcion, e));
             context.SaveChanges();
         }
+        //public static void InitializeIdentityForEF(ApplicationDbContext db)
+        //{
+        //    var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
+        //    var roleManager = HttpContext.Current.GetOwinContext().Get<ApplicationRoleManager>();
+        //    const string name = "admin@example.com";
+        //    const string password = "Admin@123456";
+        //    const string roleName = "Admin";
 
+        //    //Create Role Admin if it does not exist
+        //    var role = roleManager.FindByName(roleName);
+        //    if (role == null)
+        //    {
+        //        role = new IdentityRole(roleName);
+        //        var roleresult = roleManager.Create(role);
+        //    }
+
+        //    var user = userManager.FindByName(name);
+        //    if (user == null)
+        //    {
+        //        user = new ApplicationUser { UserName = name, Email = name };
+        //        var result = userManager.Create(user, password);
+        //        result = userManager.SetLockoutEnabled(user.Id, false);
+        //    }
+
+        //    // Add user admin to Role Admin if not already added
+        //    var rolesForUser = userManager.GetRoles(user.Id);
+        //    if (!rolesForUser.Contains(role.Name))
+        //    {
+        //        var result = userManager.AddToRole(user.Id, role.Name);
+        //    }
+        //}
     }
 }

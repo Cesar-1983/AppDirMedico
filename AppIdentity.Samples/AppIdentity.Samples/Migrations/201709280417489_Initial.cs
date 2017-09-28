@@ -3,7 +3,7 @@ namespace AppIdentity.Samples.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Inicial : DbMigration
+    public partial class Initial : DbMigration
     {
         public override void Up()
         {
@@ -35,6 +35,18 @@ namespace AppIdentity.Samples.Migrations
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.AspNetUsers", t => t.Id)
+                .Index(t => t.Id);
+            
+            CreateTable(
+                "dbo.DireccionAtencion",
+                c => new
+                    {
+                        DireccionAtencionID = c.Int(nullable: false, identity: true),
+                        Direccion = c.String(),
+                        Id = c.String(maxLength: 128),
+                    })
+                .PrimaryKey(t => t.DireccionAtencionID)
+                .ForeignKey("dbo.PerfilMedico", t => t.Id)
                 .Index(t => t.Id);
             
             CreateTable(
@@ -151,6 +163,7 @@ namespace AppIdentity.Samples.Migrations
             DropForeignKey("dbo.Especialidad", "TipoEspecialidadID", "dbo.TipoEspecialidad");
             DropForeignKey("dbo.EspecialidadPerfilMedico", "PerfilMedico_Id", "dbo.PerfilMedico");
             DropForeignKey("dbo.EspecialidadPerfilMedico", "Especialidad_EspecialidadID", "dbo.Especialidad");
+            DropForeignKey("dbo.DireccionAtencion", "Id", "dbo.PerfilMedico");
             DropForeignKey("dbo.Contactos", "Id", "dbo.PerfilMedico");
             DropIndex("dbo.EspecialidadPerfilMedico", new[] { "PerfilMedico_Id" });
             DropIndex("dbo.EspecialidadPerfilMedico", new[] { "Especialidad_EspecialidadID" });
@@ -161,6 +174,7 @@ namespace AppIdentity.Samples.Migrations
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
             DropIndex("dbo.Especialidad", new[] { "TipoEspecialidadID" });
+            DropIndex("dbo.DireccionAtencion", new[] { "Id" });
             DropIndex("dbo.PerfilMedico", new[] { "Id" });
             DropIndex("dbo.Contactos", new[] { "Id" });
             DropTable("dbo.EspecialidadPerfilMedico");
@@ -171,6 +185,7 @@ namespace AppIdentity.Samples.Migrations
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.TipoEspecialidad");
             DropTable("dbo.Especialidad");
+            DropTable("dbo.DireccionAtencion");
             DropTable("dbo.PerfilMedico");
             DropTable("dbo.Contactos");
         }

@@ -44,6 +44,43 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             return View();
         }
 
+        public ActionResult Registro()
+        {
+            return View();
+        }
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult Registro([Bind(Exclude ="photo")] RegistroPerfilView perfil, HttpPostedFileBase file)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = User.Identity;
+                    PerfilMedico v_perfilmedico = new PerfilMedico();
+                    v_perfilmedico.Id = user.GetUserId();
+                    v_perfilmedico.PrimerNombre = perfil.PrimerNombre;
+                    v_perfilmedico.SegundoNombre = perfil.SegundoNombre;
+                    v_perfilmedico.PrimerApellido = perfil.PrimerApellido;
+                    v_perfilmedico.SegundoApellido = perfil.SegundoApellido;
+                    v_perfilmedico.DescripcionCorta = perfil.DescripcionCorta;
+                    v_perfilmedico.DescripcionLarga = perfil.DescripcionLarga;
+
+                    if (file != null & file.ContentLength > 0)
+                    {
+                        var fileBytes = new byte[file.ContentLength];
+                        file.InputStream.Read(fileBytes, 0, fileBytes.Length);
+                        v_perfilmedico.Photo = fileBytes;
+                    }
+                    db.PerfilMedico.Add(v_perfilmedico);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                return View(perfil);
+            }
+            return RedirectToAction("Index", "Home", new { area = "" });
+
+        }
         public bool HasPerfil()
         {
             var userId = User.Identity.GetUserId();
