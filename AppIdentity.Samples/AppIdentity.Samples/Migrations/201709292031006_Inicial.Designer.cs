@@ -7,13 +7,13 @@ namespace AppIdentity.Samples.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.0-30225")]
-    public sealed partial class Initial : IMigrationMetadata
+    public sealed partial class Inicial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Inicial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201709280417489_Initial"; }
+            get { return "201709292031006_Inicial"; }
         }
         
         string IMigrationMetadata.Source

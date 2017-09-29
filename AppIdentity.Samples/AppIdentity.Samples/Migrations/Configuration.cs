@@ -45,7 +45,8 @@ namespace AppIdentity.Samples.Migrations
                 var store = new UserStore<ApplicationUser>(context);
                 var manager = new UserManager<ApplicationUser>(store);
                 var user = new ApplicationUser { UserName = "crivera@midominio.com", Email = "crivera@midominio.com" };
-                manager.Create(user, "123456!");
+                var result = manager.Create(user, "123456!");
+                manager.SetLockoutEnabled(user.Id, false);
                 manager.AddToRole(user.Id, "Admin");
             }
             var Especialidades1 = new List<Especialidad> {
