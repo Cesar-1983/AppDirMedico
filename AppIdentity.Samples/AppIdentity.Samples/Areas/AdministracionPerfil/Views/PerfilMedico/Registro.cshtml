@@ -8,7 +8,7 @@
 <h2>Registro</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Registro","PerfilMedico",FormMethod.Post,new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     

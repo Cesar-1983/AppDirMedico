@@ -57,13 +57,26 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
                 return RedirectToAction("Index", "Home",new { area="" });
             }
             var perfil = db.PerfilMedico.Find(User.Identity.GetUserId());
+
+            RegistroPerfilView perfilview = new RegistroPerfilView();
+            perfilview.PrimerNombre = perfil.PrimerNombre;
+            perfilview.SegundoNombre = perfil.SegundoNombre;
+            perfilview.PrimerApellido = perfil.PrimerApellido;
+            perfilview.SegundoApellido = perfil.SegundoApellido;
+            perfilview.DescripcionCorta = perfil.DescripcionCorta;
+            perfilview.DescripcionLarga = perfil.DescripcionLarga;
+            perfilview.Photo = perfil.Photo;
+
+
             ViewBag.Porcentaje = PorcentajeCompletacionPerfil();
-            return View(perfil);
+            return View(perfilview);
         }
 
         public ActionResult Registro()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+                return View();
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -73,17 +86,17 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    
+
                     byte[] imageData = null;
                     //ApplicationUserManager userManager;
                     var user = User.Identity;
                     var usuario = UserManager.FindById(User.Identity.GetUserId());
 
-                    
+
 
                     PerfilMedico v_perfilmedico = new PerfilMedico();
                     v_perfilmedico.Id = user.GetUserId();
-                    
+
                     v_perfilmedico.PrimerNombre = perfil.PrimerNombre;
                     v_perfilmedico.SegundoNombre = perfil.SegundoNombre;
                     v_perfilmedico.PrimerApellido = perfil.PrimerApellido;
@@ -91,15 +104,17 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
                     v_perfilmedico.DescripcionCorta = perfil.DescripcionCorta;
                     v_perfilmedico.DescripcionLarga = perfil.DescripcionLarga;
 
+                    HttpPostedFileBase file = Request.Files["perfilphoto"];
 
-                    if (Request.Files.Count > 0)
+                    if (file.ContentLength > 0)
                     {
-                        HttpPostedFileBase file = Request.Files["perfilphoto"];
+                        //HttpPostedFileBase file = Request.Files["perfilphoto"];
                         imageData = new byte[file.ContentLength];
                         file.InputStream.Read(imageData, 0, imageData.Length);
-                        
+
                     }
-                    else {
+                    else
+                    {
                         string fileName = HttpContext.Server.MapPath(@"~/Images/no-image.png");
                         FileInfo fileInfo = new FileInfo(fileName);
                         long imageFileLength = fileInfo.Length;
@@ -121,14 +136,16 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
                     catch (Exception ex)
                     {
 
-                        throw new Exception(ex.Message); 
+                        throw new Exception(ex.Message);
                     }
                     return RedirectToAction("Index");
                 }
                 return View(perfil);
             }
-            return RedirectToAction("Index", "Home", new { area = "" });
-
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
         }
         public bool HasPerfil()
         {
