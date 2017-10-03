@@ -58,7 +58,10 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             }
             var perfil = db.PerfilMedico.Find(User.Identity.GetUserId());
 
+            List<DireccionAtencionView> direcciones = new List<DireccionAtencionView>();
+
             RegistroPerfilView perfilview = new RegistroPerfilView();
+            perfilview.Id = perfil.Id;
             perfilview.PrimerNombre = perfil.PrimerNombre;
             perfilview.SegundoNombre = perfil.SegundoNombre;
             perfilview.PrimerApellido = perfil.PrimerApellido;
@@ -66,7 +69,12 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             perfilview.DescripcionCorta = perfil.DescripcionCorta;
             perfilview.DescripcionLarga = perfil.DescripcionLarga;
             perfilview.Photo = perfil.Photo;
+            
 
+            foreach (var item in perfil.DireccionAtencion)
+            {
+                perfilview.Direcciones.Add(new DireccionAtencionView { DireccionAtencionID = item.DireccionAtencionID, Direccion = item.Direccion });
+            }
 
             ViewBag.Porcentaje = PorcentajeCompletacionPerfil();
             return View(perfilview);
@@ -147,12 +155,91 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
                 return RedirectToAction("Index", "Home", new { area = "" });
             }
         }
+
+
+        public ActionResult Editar(string UserId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var perfil = db.PerfilMedico.Find(UserId);
+                RegistroPerfilView v_perfilmedico = new RegistroPerfilView();
+                v_perfilmedico.Id = perfil.Id;
+
+                v_perfilmedico.PrimerNombre = perfil.PrimerNombre;
+                v_perfilmedico.SegundoNombre = perfil.SegundoNombre;
+                v_perfilmedico.PrimerApellido = perfil.PrimerApellido;
+                v_perfilmedico.SegundoApellido = perfil.SegundoApellido;
+                v_perfilmedico.DescripcionCorta = perfil.DescripcionCorta;
+                v_perfilmedico.DescripcionLarga = perfil.DescripcionLarga;
+                
+                return View(v_perfilmedico);
+            }
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Editar([Bind(Exclude = "perfilPhoto")] RegistroPerfilView modelperfil)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (ModelState.IsValid)
+                {
+
+                    var perfil = db.PerfilMedico.Find(modelperfil.Id);
+
+                    if (perfil != null)
+                    {
+                        byte[] imageData = null;
+                        HttpPostedFileBase file = Request.Files["perfilphoto"];
+                        //PerfilMedico v_perfilmedico = new PerfilMedico();
+
+                        perfil.PrimerNombre = modelperfil.PrimerNombre;
+                        perfil.SegundoNombre = modelperfil.SegundoNombre;
+                        perfil.PrimerApellido = modelperfil.PrimerApellido;
+                        perfil.SegundoApellido = modelperfil.SegundoApellido;
+                        perfil.DescripcionCorta = modelperfil.DescripcionCorta;
+                        perfil.DescripcionLarga = modelperfil.DescripcionLarga;
+
+                        if (file.ContentLength > 0)
+                        {
+                            //HttpPostedFileBase file = Request.Files["perfilphoto"];
+                            imageData = new byte[file.ContentLength];
+                            file.InputStream.Read(imageData, 0, imageData.Length);
+
+                        }
+                        else
+                        {
+                            string fileName = HttpContext.Server.MapPath(@"~/Images/no-image.png");
+                            FileInfo fileInfo = new FileInfo(fileName);
+                            long imageFileLength = fileInfo.Length;
+                            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                            BinaryReader br = new BinaryReader(fs);
+                            imageData = br.ReadBytes((int)imageFileLength);
+
+                        }
+
+                        perfil.Photo = imageData;
+
+                        db.Entry(perfil).State = System.Data.Entity.EntityState.Modified;
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("Index");
+                }
+                return View(modelperfil);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home", new { area = "" });
+            }
+        }
+
+        #region Metodos
         public bool HasPerfil()
         {
             var userId = User.Identity.GetUserId();
             var perfilMedico = db.PerfilMedico.FirstOrDefault(p => p.Id == userId);
-            return perfilMedico != null ? true: false;
-            
+            return perfilMedico != null ? true : false;
+
 
         }
         public bool HasEspecialidades()
@@ -188,10 +275,10 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
         public string PorcentajeCompletacionPerfil()
         {
             int porc = 0;
-            
+
 
             if (HasPerfil())
-                porc += 1; 
+                porc += 1;
             if (HasEspecialidades())
                 porc += 1;
             if (HasContactos())
@@ -203,19 +290,21 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             {
                 case 1:
                     return "25";
-                    
+
                 case 2:
                     return "50";
-                    
+
                 case 3:
                     return "75";
-                    
+
                 case 4:
                     return "100";
-                    
+
                 default:
-                    return "0" ;
+                    return "0";
             }
         }
+        #endregion
+
     }
 }

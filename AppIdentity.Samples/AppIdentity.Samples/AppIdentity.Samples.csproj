@@ -207,6 +207,9 @@
     <Content Include="Areas\AdministracionPerfil\Views\_ViewStart.cshtml" />
     <Content Include="Areas\AdministracionPerfil\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\AdministracionPerfil\Views\PerfilMedico\Registro.cshtml" />
+    <Content Include="Areas\AdministracionPerfil\Views\Shared\DisplayTemplates\_DireccionAtencion.cshtml" />
+    <Content Include="Areas\AdministracionPerfil\Views\PerfilMedico\Editar.cshtml" />
+    <Content Include="Areas\AdministracionPerfil\Views\Contactos\Registro.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -214,6 +217,7 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Views\Shared\DisplayTemplates\DateTime.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -284,7 +288,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\AdministracionPerfil\AdministracionPerfilAreaRegistration.cs" />
+    <Compile Include="Areas\AdministracionPerfil\Controllers\ContactosController.cs" />
     <Compile Include="Areas\AdministracionPerfil\Controllers\PerfilMedicoController.cs" />
+    <Compile Include="Areas\AdministracionPerfil\Models\ContactoViewModels.cs" />
     <Compile Include="Areas\AdministracionPerfil\Models\PerfilViewModels.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -298,6 +304,14 @@
     <Compile Include="Migrations\201709292031006_Inicial.Designer.cs">
       <DependentUpon>201709292031006_Inicial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710031550486_Direcciones.cs" />
+    <Compile Include="Migrations\201710031550486_Direcciones.Designer.cs">
+      <DependentUpon>201710031550486_Direcciones.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710031555105_Direcciones1.cs" />
+    <Compile Include="Migrations\201710031555105_Direcciones1.Designer.cs">
+      <DependentUpon>201710031555105_Direcciones1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
@@ -310,7 +324,14 @@
     <EmbeddedResource Include="Migrations\201709292031006_Inicial.resx">
       <DependentUpon>201709292031006_Inicial.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710031550486_Direcciones.resx">
+      <DependentUpon>201710031550486_Direcciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710031555105_Direcciones1.resx">
+      <DependentUpon>201710031555105_Direcciones1.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

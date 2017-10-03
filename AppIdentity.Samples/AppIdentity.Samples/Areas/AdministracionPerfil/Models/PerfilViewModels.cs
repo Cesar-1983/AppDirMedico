@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
 namespace AppIdentity.Samples.Areas.AdministracionPerfil.Models
 {
     public class PerfilViewModels
     {
     }
-    public class RegistroPerfilView {
+    public class RegistroPerfilView
+    {
+
+        [HiddenInput(DisplayValue = false)]
+        public string Id { get; set; }
 
         [Required]
-        [Display(Name ="Primer Nombre")]
+        [Display(Name = "Primer Nombre")]
         public string PrimerNombre { get; set; }
 
         [Display(Name = "Segundo Nombre")]
@@ -35,5 +39,16 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Models
 
         [Display(Name = "Foto de Perfil")]
         public byte[] Photo { get; set; }
+
+        public List<DireccionAtencionView> Direcciones { get; set; }
+    }
+
+    public class DireccionAtencionView {
+
+        public int DireccionAtencionID { get; set; }
+
+        [Display(Name ="Direccion")]
+        public string Direccion { get; set; }
+
     }
 }

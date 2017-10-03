@@ -20,7 +20,7 @@ namespace IdentitySample.Models
             // Add custom user claims here
             return userIdentity;
         }
-        
+
         public virtual PerfilMedico PerfilMedico { get; set; }
     }
 
@@ -53,6 +53,9 @@ namespace IdentitySample.Models
         public DbSet<Especialidad> Especialidad { get; set; }
         public DbSet<PerfilMedico> PerfilMedico { get; set; }
         public DbSet<Contactos> Contactos { get; set; }
+        public DbSet<Departamento> Departamento { get; set; }
+        public DbSet<Municipio> Municipio { get; set; }
+        public DbSet<DireccionAtencion> DireccionAtencion { get; set; }
     }
 
     public class TipoEspecialidad {
@@ -74,7 +77,7 @@ namespace IdentitySample.Models
 
     public class PerfilMedico {
         //public int PerfilMedicoID { get; set; }
-        
+
         public string Id { get; set; }
         [Key, ForeignKey("Id")]
         [Required]
@@ -130,5 +133,29 @@ namespace IdentitySample.Models
         public string Id { get; set; }
         [ForeignKey("Id")]
         public virtual PerfilMedico PerfilMedico { get; set; }
+
+        public int MunicipioID { get; set; }
+        [ForeignKey("MunicipioID")]
+        public virtual Municipio Municipio { get;set;}
+    }
+
+    public class Departamento{
+        public int DepartamentoID { get; set; }
+        public string Nombre { get; set; }
+         
+        //public ICollection<DireccionAtencion> DireccionAtencion { get; set; }
+        public ICollection<Municipio> Municipio { get; set; }
+    }
+
+    public class Municipio {
+        public int MunicipioID { get; set; }
+        public string Nombre { get; set; }
+
+        public int DepartamentoID { get; set; }
+
+        [ForeignKey("DepartamentoID")]
+        public virtual Departamento Departamento { get; set; }
+
+        public virtual ICollection<DireccionAtencion> DireccionAtencion { get; set; }
     }
 }
