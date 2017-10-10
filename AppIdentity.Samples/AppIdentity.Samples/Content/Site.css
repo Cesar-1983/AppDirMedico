@@ -497,3 +497,25 @@ table.dataTable thead .sorting:after {
   text-align: left;
   transition-duration: 3s;
 }
+
+.navbar-default {
+    background-color: #61bf5e;
+    border-color: #e7e7e7;
+}
+
+.sidebar ul li a.active {
+    background-color: #558453;
+}
+.nav>li>a:focus, .nav>li>a:hover {
+    text-decoration: none;
+    background-color: #90ecac;
+}
+
+a:focus, a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+a {
+    color: #fafcfd;
+    text-decoration: none;
+}

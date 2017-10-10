@@ -31,60 +31,59 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
         // GET: AdministracionPerfil/PerfilMedico
         public ActionResult Index()
         {
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    return RedirectToAction("Index", "Home");
-            //}
-            //var userid = User.Identity.GetUserId();
-            //var perfilMedico = db.PerfilMedico.FirstOrDefault(p => p.Id == userid);
 
-            //if (perfilMedico == null)
-            //{
-            //    return vi
-            //    return HttpNotFound();
-            //}
-
-            //var perfil = new RegistroPerfilView {
-            //    PrimerNombre = perfilMedico.PrimerNombre,
-            //    SegundoNombre = perfilMedico.SegundoNombre,
-            //    PrimerApellido = perfilMedico.PrimerApellido,
-            //    SegundoApellido =perfilMedico.SegundoApellido,
-            //    Photo = perfilMedico.Photo
-            //};
-            //return View(perfil);
-            if (!User.Identity.IsAuthenticated)
+            try
             {
-                return RedirectToAction("Index", "Home",new { area="" });
+                if (!User.Identity.IsAuthenticated)
+                {
+                    //return RedirectToAction("Index", "Home",new { area="" });
+                    return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
+                }
+                var perfil = db.PerfilMedico.Find(User.Identity.GetUserId());
+
+                List<DireccionAtencionView> direcciones = new List<DireccionAtencionView>();
+
+                RegistroPerfilView perfilview = new RegistroPerfilView();
+                perfilview.Id = perfil.Id;
+                perfilview.PrimerNombre = perfil.PrimerNombre;
+                perfilview.SegundoNombre = perfil.SegundoNombre;
+                perfilview.PrimerApellido = perfil.PrimerApellido;
+                perfilview.SegundoApellido = perfil.SegundoApellido;
+                perfilview.DescripcionCorta = perfil.DescripcionCorta;
+                perfilview.DescripcionLarga = perfil.DescripcionLarga;
+                perfilview.Photo = perfil.Photo;
+
+
+
+                foreach (var item in perfil.DireccionAtencion)
+                {
+                    perfilview.Direcciones.Add(new DireccionAtencionView { DireccionAtencionID = item.DireccionAtencionID, Direccion = item.Direccion });
+                }
+                if (perfil.Contactos != null)
+                {
+                    perfilview.Contactos = new List<ContactosView>();
+                    foreach (var item in perfil.Contactos)
+                    {
+                        var Contacto = new ContactosView { ContactosID = item.ContactosID, Id = item.Id, Descripcion = item.Descripcion, Telefono = item.Telefono };
+                        perfilview.Contactos.Add(Contacto);
+                    }
+                }
+
+                ViewBag.Porcentaje = PorcentajeCompletacionPerfil();
+                return View(perfilview);
             }
-            var perfil = db.PerfilMedico.Find(User.Identity.GetUserId());
-
-            List<DireccionAtencionView> direcciones = new List<DireccionAtencionView>();
-
-            RegistroPerfilView perfilview = new RegistroPerfilView();
-            perfilview.Id = perfil.Id;
-            perfilview.PrimerNombre = perfil.PrimerNombre;
-            perfilview.SegundoNombre = perfil.SegundoNombre;
-            perfilview.PrimerApellido = perfil.PrimerApellido;
-            perfilview.SegundoApellido = perfil.SegundoApellido;
-            perfilview.DescripcionCorta = perfil.DescripcionCorta;
-            perfilview.DescripcionLarga = perfil.DescripcionLarga;
-            perfilview.Photo = perfil.Photo;
-            
-
-            foreach (var item in perfil.DireccionAtencion)
+            catch (Exception ex)
             {
-                perfilview.Direcciones.Add(new DireccionAtencionView { DireccionAtencionID = item.DireccionAtencionID, Direccion = item.Direccion });
+                throw new Exception(ex.Message);
+                return View("Error");
             }
-
-            ViewBag.Porcentaje = PorcentajeCompletacionPerfil();
-            return View(perfilview);
         }
 
         public ActionResult Registro()
         {
             if (User.Identity.IsAuthenticated)
                 return View();
-            return RedirectToAction("Index", "Home", new { area = "" });
+            return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -152,7 +151,7 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
             }
         }
 
@@ -171,10 +170,10 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
                 v_perfilmedico.SegundoApellido = perfil.SegundoApellido;
                 v_perfilmedico.DescripcionCorta = perfil.DescripcionCorta;
                 v_perfilmedico.DescripcionLarga = perfil.DescripcionLarga;
-                
+
                 return View(v_perfilmedico);
             }
-            return RedirectToAction("Index", "Home", new { area = "" });
+            return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -229,7 +228,7 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home", new { area = "" });
+                return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
             }
         }
 

@@ -41,6 +41,7 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Models
         public byte[] Photo { get; set; }
 
         public List<DireccionAtencionView> Direcciones { get; set; }
+        public List<ContactosView> Contactos { get; set; }
     }
 
     public class DireccionAtencionView {
@@ -50,5 +51,18 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Models
         [Display(Name ="Direccion")]
         public string Direccion { get; set; }
 
+    }
+
+    public class ContactosView
+    {
+        [HiddenInput(DisplayValue = false)]
+        public int ContactosID { get; set; }
+        [Display(Name = "Número de Telefono")]
+        public string Telefono { get; set; }
+        [Display(Name = "Descripción")]
+        public string Descripcion { get; set; }
+
+        [HiddenInput(DisplayValue = false)]
+        public string Id { get; set; }
     }
 }

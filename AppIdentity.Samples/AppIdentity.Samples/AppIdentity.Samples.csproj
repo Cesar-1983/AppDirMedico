@@ -210,6 +210,7 @@
     <Content Include="Areas\AdministracionPerfil\Views\Shared\DisplayTemplates\_DireccionAtencion.cshtml" />
     <Content Include="Areas\AdministracionPerfil\Views\PerfilMedico\Editar.cshtml" />
     <Content Include="Areas\AdministracionPerfil\Views\Contactos\Registro.cshtml" />
+    <Content Include="Areas\AdministracionPerfil\Views\Shared\DisplayTemplates\_ContactosView.cshtml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.1.1.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />

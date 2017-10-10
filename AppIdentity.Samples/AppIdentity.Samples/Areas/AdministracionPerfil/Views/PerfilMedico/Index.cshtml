@@ -76,7 +76,7 @@
                         </a>
                     </div>
                     <div class="list-group">
-                        <a href="#" class="list-group-item">
+                        <a href="@Url.Action("Registro","Contactos",new { area = "AdministracionPerfil" })" class="list-group-item">
                             <i class="fa fa-phone"></i> Agregar Telefonos de contacto
                         </a>
                     </div>
@@ -109,7 +109,17 @@
                                 @Html.DisplayFor(x => item.Direccion)
                             }
                         }
+                        
                     </dl>
+                    @if (Model.Contactos != null)
+                    {
+                        <ul class="fa-ul">
+                            @foreach (var item in Model.Contactos)
+                            {
+                                @Html.DisplayFor(x => item,"_ContactosView")
+                            }
+                        </ul>
+                    }
                     @Html.ActionLink("Editar Perfil","Editar","PerfilMedico", new { UserId = Model.Id }, new { @class = "btn btn-primary" })
 
 
