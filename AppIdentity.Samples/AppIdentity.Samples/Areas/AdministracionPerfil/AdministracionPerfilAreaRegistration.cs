@@ -15,6 +15,11 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil
         public override void RegisterArea(AreaRegistrationContext context) 
         {
             context.MapRoute(
+                name: "AdministracionPerfil_Perfil",
+                url: "AdministracionPerfil/{controller}/{action}/{IdUsuario}/{Id}",
+                defaults: new { controller = "Contactos", action = "Index", IdUsuario = UrlParameter.Optional, Id = UrlParameter.Optional }
+            );
+            context.MapRoute(
                 "AdministracionPerfil_default",
                 "AdministracionPerfil/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }

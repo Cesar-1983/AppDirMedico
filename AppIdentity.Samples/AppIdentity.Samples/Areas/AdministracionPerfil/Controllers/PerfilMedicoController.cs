@@ -8,6 +8,8 @@ using AppIdentity.Samples.Areas.AdministracionPerfil.Models;
 using Microsoft.AspNet.Identity;
 using System.IO;
 using Microsoft.AspNet.Identity.Owin;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
 {
@@ -87,6 +89,7 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
         }
         [ValidateAntiForgeryToken]
         [HttpPost]
+        
         public ActionResult Registro([Bind(Exclude = "perfilphoto")] RegistroPerfilView perfil)
         {
             if (User.Identity.IsAuthenticated)
@@ -179,56 +182,101 @@ namespace AppIdentity.Samples.Areas.AdministracionPerfil.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Editar([Bind(Exclude = "perfilPhoto")] RegistroPerfilView modelperfil)
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                if (ModelState.IsValid)
+                if (User.Identity.IsAuthenticated)
                 {
-
-                    var perfil = db.PerfilMedico.Find(modelperfil.Id);
-
-                    if (perfil != null)
+                    if (ModelState.IsValid)
                     {
-                        byte[] imageData = null;
-                        HttpPostedFileBase file = Request.Files["perfilphoto"];
-                        //PerfilMedico v_perfilmedico = new PerfilMedico();
+                        //var user = User.Identity;
+                        var usuario = UserManager.FindById(User.Identity.GetUserId());
 
-                        perfil.PrimerNombre = modelperfil.PrimerNombre;
-                        perfil.SegundoNombre = modelperfil.SegundoNombre;
-                        perfil.PrimerApellido = modelperfil.PrimerApellido;
-                        perfil.SegundoApellido = modelperfil.SegundoApellido;
-                        perfil.DescripcionCorta = modelperfil.DescripcionCorta;
-                        perfil.DescripcionLarga = modelperfil.DescripcionLarga;
+                        PerfilMedico v_perfilmedico = new PerfilMedico();
+                        //v_perfilmedico.
+                        v_perfilmedico.Id = usuario.Id;
 
-                        if (file.ContentLength > 0)
+                        //v_perfilmedico.PrimerNombre = perfil.PrimerNombre;
+                        //v_perfilmedico.SegundoNombre = perfil.SegundoNombre;
+                        //v_perfilmedico.PrimerApellido = perfil.PrimerApellido;
+                        //v_perfilmedico.SegundoApellido = perfil.SegundoApellido;
+                        //v_perfilmedico.DescripcionCorta = perfil.DescripcionCorta;
+                        //v_perfilmedico.DescripcionLarga = perfil.DescripcionLarga;
+
+                        //var perfil = db.PerfilMedico.Find(modelperfil.Id);
+
+                        if (usuario.PerfilMedico != null)
                         {
-                            //HttpPostedFileBase file = Request.Files["perfilphoto"];
-                            imageData = new byte[file.ContentLength];
-                            file.InputStream.Read(imageData, 0, imageData.Length);
+                            byte[] imageData = null;
+                            HttpPostedFileBase file = Request.Files["perfilphoto"];
+                            //PerfilMedico v_perfilmedico = new PerfilMedico();
 
+                            v_perfilmedico.PrimerNombre = modelperfil.PrimerNombre;
+                            v_perfilmedico.SegundoNombre = modelperfil.SegundoNombre;
+                            v_perfilmedico.PrimerApellido = modelperfil.PrimerApellido;
+                            v_perfilmedico.SegundoApellido = modelperfil.SegundoApellido;
+                            v_perfilmedico.DescripcionCorta = modelperfil.DescripcionCorta;
+                            v_perfilmedico.DescripcionLarga = modelperfil.DescripcionLarga;
+                            
+                            if (file.ContentLength > 0)
+                            {
+                                //HttpPostedFileBase file = Request.Files["perfilphoto"];
+                                imageData = new byte[file.ContentLength];
+                                file.InputStream.Read(imageData, 0, imageData.Length);
+
+                            }
+                            else
+                            {
+                                string fileName = HttpContext.Server.MapPath(@"~/Images/no-image.png");
+                                FileInfo fileInfo = new FileInfo(fileName);
+                                long imageFileLength = fileInfo.Length;
+                                FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+                                BinaryReader br = new BinaryReader(fs);
+                                imageData = br.ReadBytes((int)imageFileLength);
+
+                            }
+
+                            v_perfilmedico.Photo = imageData;
+
+                            usuario.PerfilMedico = v_perfilmedico;
+                            UserManager.Update(usuario);
+
+                            //db.Entry(perfil).State = System.Data.Entity.EntityState.Modified;
+                            //db.SaveChanges();
                         }
-                        else
-                        {
-                            string fileName = HttpContext.Server.MapPath(@"~/Images/no-image.png");
-                            FileInfo fileInfo = new FileInfo(fileName);
-                            long imageFileLength = fileInfo.Length;
-                            FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
-                            BinaryReader br = new BinaryReader(fs);
-                            imageData = br.ReadBytes((int)imageFileLength);
-
-                        }
-
-                        perfil.Photo = imageData;
-
-                        db.Entry(perfil).State = System.Data.Entity.EntityState.Modified;
-                        db.SaveChanges();
+                        return RedirectToAction("Index");
                     }
-                    return RedirectToAction("Index");
+                    return View(modelperfil);
                 }
-                return View(modelperfil);
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
+                }
             }
-            else
+            catch (DbEntityValidationException ex)
             {
-                return RedirectToAction("Login", "Account", new { area = "", returnUrl = Url.Action("Index", "PerfilMedico") });
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine();
+                sb.AppendLine();
+
+                foreach (var eve in ex.EntityValidationErrors)
+                {
+                    sb.AppendLine(string.Format("- Entity of type \"{0}\" in state \"{1}\" has the following validation errors:",
+                        eve.Entry.Entity.GetType().FullName, eve.Entry.State));
+                    foreach (var ve in eve.ValidationErrors)
+                    {
+                        sb.AppendLine(string.Format("-- Property: \"{0}\", Value: \"{1}\", Error: \"{2}\"",
+                            ve.PropertyName,
+                            eve.Entry.CurrentValues.GetValue<object>(ve.PropertyName),
+                            ve.ErrorMessage));
+                    }
+                }
+                return View("Error");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+                return View("Error");
             }
         }
 

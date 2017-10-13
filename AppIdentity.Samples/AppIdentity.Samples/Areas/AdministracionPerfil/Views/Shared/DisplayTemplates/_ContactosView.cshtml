@@ -1,4 +1,11 @@
 ﻿@model AppIdentity.Samples.Areas.AdministracionPerfil.Models.ContactosView
 
-<li><i class="fa-li fa fa-phone"></i> @Model.Telefono (@Model.Descripcion)</li>>
+<li>
+    <i class="fa-li fa fa-phone"></i>
+    @Model.Telefono (@Model.Descripcion)
+    <span class="pull-right text-muted small">
+        @Html.ActionLink("Editar", "Editar", "Contactos", new { area = "AdministracionPerfil", IdUsuario = Model.Id, Id = Model.ContactosID }, null)
+        @Html.ActionLink("Borrar", "Borrar", "Contactos", new { area = "AdministracionPerfil", IdUsuario = Model.Id, Id = Model.ContactosID }, new { data_modal = "" })
+    </span>
+</li>
 

@@ -509,13 +509,19 @@ table.dataTable thead .sorting:after {
 .nav>li>a:focus, .nav>li>a:hover {
     text-decoration: none;
     background-color: #90ecac;
-}
-
-a:focus, a:hover {
     color: #ffffff;
     text-decoration: underline;
 }
-a {
+.nav > li > a {
     color: #fafcfd;
     text-decoration: none;
 }
+
+/*a:focus, a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}*/
+/*a {
+    color: #fafcfd;
+    text-decoration: none;
+}*/

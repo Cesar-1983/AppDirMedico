@@ -32,6 +32,8 @@ namespace IdentitySample
                       "~/Content/bootstrap.css",
                       "~/Content/site.css",
                       "~/Content/font-awesome.min.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/modalform").Include("~/Scripts/App/modalform.js"));
         }
     }
 }
